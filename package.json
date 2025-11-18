@@ -1,0 +1,27 @@
+{
+  "name": "true-valence-mapper-bmad",
+  "version": "0.1.0",
+  "description": "True Valence Mapper - BMAD-METHOD integration for requirements modeling",
+  "private": true,
+  "scripts": {
+    "install-bmad": "npx bmad-method@alpha install",
+    "init": "bmad init",
+    "validate": "bmad validate"
+  },
+  "dependencies": {
+    "bmad-method": "6.0.0-alpha.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rhart696/true-valence-mapper-bmad.git"
+  },
+  "keywords": [
+    "true-valence",
+    "relationship-mapper",
+    "bmad-method",
+    "requirements-modeling",
+    "ai-assisted-development"
+  ],
+  "author": "rhart696",
+  "license": "MIT"
+}
