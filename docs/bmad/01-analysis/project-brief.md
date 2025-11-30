@@ -24,22 +24,50 @@ Research shows:
 
 ### Market Size
 - **ProActive ReSolutions Network**:
-  - ~200 certified ProActive Coaches currently active
-  - 50+ new coaches trained annually
+  - **2 certified ProActive Coaches** currently active (Nascent Product)
+  - Expansion planned through ProActive Workplace Fundamentals certification
   - Average coach serves 15-20 clients
-  - Total coachee reach: ~3,000-4,000 professionals
+  - Total coachee reach: ~30-40 professionals (Initial)
 - **Growth Potential**:
-  - ProActive certification program expanding 25% YoY
+  - ProActive certification program expanding
   - Enterprise partnerships increasing demand for ProActive-certified coaches
   - Digital tool adoption accelerates coach certification ROI
 
 ### Addressable Market
-- **Phase 1 (ProActive Exclusive)**:
-  - Year 1: 200 coaches × $99/month = $237,600 ARR
-  - Year 2: 350 coaches × $99/month = $415,800 ARR
+- **Phase 1 (ProActive Exclusive - Nascent)**:
+  - Year 1: 2 coaches × $99/month = $2,376 ARR (Initial Pilot)
+  - Year 2: Growth dependent on certification expansion
 - **Phase 2 (Potential Expansion)**:
   - Licensed to broader coaching market with ProActive branding
   - Partnership opportunities with aligned coaching organizations
+
+### Broader Market Context (2024-2025)
+While ProActive operates in a specialized niche, the broader workplace coaching market provides context for the digital tool opportunity:
+- **Market Size**: The global coaching industry is estimated between **$6.25B and $20B** (2024), with digital coaching platforms growing at ~11% CAGR.
+- **Key Players**:
+    - **BetterUp**: ~$214M - $250M revenue (2024), focusing on enterprise-wide coaching.
+    - **CoachHub**: ~$40M - $300M revenue estimates, strong in AI matching and global reach.
+- **Trends**:
+    - **Digital Transformation**: Rapid shift to online platforms and AI-augmented coaching.
+    - **Democratization**: Moving beyond executives to all employee levels.
+    - **Niche Specialization**: Growth in specialized coaching (like ProActive's relationship focus) vs. generic models.
+
+**Implication for ProActive**: The market is validating digital coaching tools. ProActive's opportunity lies in **differentiation through methodology** (depth) rather than broad generic reach (breadth).
+
+### Specialized Market Comparables
+Research into specialized coaching niches reveals strong validation for ProActive's "deep methodology" approach:
+
+1.  **NeuroLeadership Institute (NLI)**:
+    -   **Model**: Science-based methodology (neuroscience) applied to leadership.
+    -   **Scale**: Est. $10M - $50M revenue.
+    -   **Relevance**: Proves that a **proprietary, science-backed methodology** can command a premium niche market, distinct from generic coaching.
+
+2.  **Conflict Resolution Market**:
+    -   **Size**: Part of an ~$8.8B industry (2024), growing at 8.1% CAGR.
+    -   **Drivers**: Remote work and workplace disputes are driving demand for specialized conflict coaching.
+    -   **Trend**: Move towards "hyper-specialization" (e.g., specific conflict types) rather than generalist resolution.
+
+**Strategic Fit**: True Valence Mapper aligns perfectly with the industry shift towards **specialized, methodology-driven tools** that address specific high-value problems (relationship health) rather than generic "coaching management."
 
 ## 3. User Research Insights
 
@@ -99,6 +127,16 @@ No existing tool combines:
 - Exclusive tool for certified coaches
 - Deep alignment with ProActive Workplace Fundamentals
 - Built-in ProActive best practices and frameworks
+
+### Broader Competitive Landscape (Research Strategy)
+While no direct competitors exist for the ProActive methodology, we will research broader relationship mapping and coaching tools to identify best-in-class UX patterns and feature sets.
+
+**Key Research Targets:**
+1.  **Generic Network Visualization:** (e.g., Kumu.io, GraphCommons) - To understand intuitive ways to manipulate node-link diagrams.
+2.  **Executive Coaching Platforms:** (e.g., BetterUp, CoachHub) - To analyze how they handle goal tracking and confidential notes.
+3.  **CRM/Relationship Management:** (e.g., Clay, Monica) - To see how they structure "relationship health" metrics, even if different from Valence.
+
+**Goal:** Adopt industry-standard usability patterns while retaining exclusive ProActive methodology.
 
 ## 5. Solution Vision
 

@@ -23,7 +23,7 @@ ProActive Certified Coaches need a digital tool that:
 
 | User Type | Description | Volume |
 |-----------|-------------|--------|
-| **Primary** | ProActive Certified Coaches | ~200 active |
+| **Primary** | ProActive Certified Coaches | 2 active (Nascent) |
 | **Secondary** | Coaching clients (Coachees) | ~3,000-4,000 |
 | **Tertiary** | ProActive trainers & administrators | ~20 |
 
@@ -36,7 +36,7 @@ ProActive Certified Coaches need a digital tool that:
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| FR1.1 | System SHALL authenticate users against ProActive certification database | P0 |
+| FR1.1 | System SHALL authenticate users (Manual Allowlist for MVP) | P0 |
 | FR1.2 | System SHALL restrict access to active ProActive Certified Coaches only | P0 |
 | FR1.3 | System SHALL support coach-client invitation system | P0 |
 | FR1.4 | System SHALL enforce role-based permissions (Coach vs Coachee) | P0 |

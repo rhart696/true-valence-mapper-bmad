@@ -10,11 +10,9 @@
 **So that** I can access the exclusive ProActive tools
 
 **Acceptance Criteria:**
-- Coach enters ProActive certification ID
-- System validates against ProActive database
-- Active certification grants full access
-- Expired certification shows renewal prompt
-- Non-certified users see training information
+- Coach email checked against manual allowlist
+- System grants access to authorized pilot coaches
+- Unauthorized users see "Pilot Access Only" message
 
 **Priority:** P0
 **Story Points:** 5
