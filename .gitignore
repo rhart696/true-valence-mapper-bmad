@@ -51,3 +51,4 @@ test-*.html
 test-*.py
 deploy-and-test-*.py
 verify-*.sql
+*.code-workspace
