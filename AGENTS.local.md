@@ -10,7 +10,7 @@
 |-----|-------|
 | Edition | BMAD |
 | Focus | BMAD-METHOD v6-alpha integration, requirements modeling and validation workflows |
-| Last Updated | 2025-12-02 |
+| Last Updated | 2025-12-03 |
 
 ## Approved Dependencies
 
@@ -18,7 +18,7 @@ Dependencies specifically approved for THIS edition (in addition to shared depen
 
 | Package | Version | Approved By | Date | Reason |
 |---------|---------|-------------|------|--------|
-| _none yet_ | | | | |
+| bmad-method | 6.0.0-alpha.10 | rhart696 | 2025-12-03 | Core BMAD methodology framework - required for this edition's purpose |
 
 ## Edition-Specific Exceptions
 

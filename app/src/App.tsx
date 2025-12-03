@@ -1,48 +1,14 @@
-import { useState, useEffect } from 'react'
-import { supabase } from './lib/supabase'
-import { Auth } from './components/Auth'
+import { useAuthStore, useStore } from './lib/store'
+import { LoginPage } from './components/auth/LoginPage'
 import { GraphCanvas } from './components/GraphCanvas'
 import { ValenceEditor } from './components/ValenceEditor'
-import { useStore } from './lib/store'
 
 function App() {
-  const [session, setSession] = useState<any>(null)
+  const { isAuthenticated, user, logout } = useAuthStore()
   const { addNode, addLink, selectedNodeId, selectedLinkId } = useStore()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  // Load session data when user is authenticated
-  useEffect(() => {
-    if (session?.user) {
-      const loadData = async () => {
-        const { data } = await supabase
-          .from('sessions')
-          .select('data')
-          .eq('user_id', session.user.id)
-          .single()
-
-        if (data?.data) {
-          useStore.getState().loadSession(data.data)
-        }
-      }
-      loadData()
-    }
-  }, [session])
-
-  if (!session) {
-    return <Auth />
+  if (!isAuthenticated) {
+    return <LoginPage />
   }
 
   const handleAddNode = () => {
@@ -62,9 +28,9 @@ function App() {
           <h1 className="text-xl font-bold text-slate-800">True Valence Mapper</h1>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-slate-500">{session.user.email}</span>
+          <span className="text-sm text-slate-500">{user?.email}</span>
           <button
-            onClick={() => supabase.auth.signOut()}
+            onClick={logout}
             className="text-sm font-medium text-red-600 hover:text-red-700"
           >
             Sign Out

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../lib/store'
-import type { Valence } from '../lib/store'
+import type { Valence } from '../types'
 
 export function ValenceEditor() {
     const { selectedLinkId, valence, updateValence } = useStore()

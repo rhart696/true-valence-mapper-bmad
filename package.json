@@ -6,7 +6,9 @@
   "scripts": {
     "install-bmad": "npx bmad-method@alpha install",
     "init": "bmad init",
-    "validate": "bmad validate"
+    "validate": "bmad validate",
+    "bmad:check": "bash scripts/bmad-health-check.sh",
+    "bmad:fix": "npm install && npm run install-bmad && npm run bmad:check"
   },
   "dependencies": {
     "bmad-method": "6.0.0-alpha.10"

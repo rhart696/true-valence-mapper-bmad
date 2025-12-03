@@ -1,94 +1,56 @@
-import { create } from 'zustand'
-import { supabase } from './supabase'
+import { create } from 'zustand';
+import type { AuthState, User, GraphState } from '../types';
 
-export interface Node {
-    id: string
-    name: string
-    role: "Direct Report" | "Manager" | "Peer" | "Stakeholder" | "Mentor"
-    group?: string
-    x?: number
-    y?: number
-}
+// --- Auth Store ---
+const ALLOWED_EMAILS = ['coach@proactive.com', 'pilot@proactive.com'];
 
-export interface Link {
-    source: string
-    target: string
-    type: "Reporting" | "Collaboration" | "Advisory"
-}
+export const useAuthStore = create<AuthState>((set) => ({
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+    error: null,
+    login: async (email: string) => {
+        set({ isLoading: true, error: null });
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-export interface Valence {
-    trust: number
-    communication: number
-    support: number
-    respect: number
-    alignment: number
-    notes?: string
-}
+        if (ALLOWED_EMAILS.includes(email.toLowerCase())) {
+            const user: User = {
+                id: '1',
+                email,
+                name: 'ProActive Coach',
+                role: 'coach',
+            };
+            set({ user, isAuthenticated: true, isLoading: false });
+        } else {
+            set({
+                error: 'Access Denied: This email is not authorized for the Pilot MVP.',
+                isLoading: false,
+            });
+        }
+    },
+    logout: () => set({ user: null, isAuthenticated: false }),
+}));
 
-interface SessionState {
-    nodes: Node[]
-    links: Link[]
-    valence: Record<string, Valence> // Keyed by link ID (source-target)
-    selectedNodeId: string | null
-    selectedLinkId: string | null
-
-    addNode: (node: Node) => void
-    addLink: (link: Link) => void
-    updateValence: (linkId: string, valence: Valence) => void
-    selectNode: (id: string | null) => void
-    selectLink: (id: string | null) => void
-    loadSession: (data: any) => void
-    saveSession: () => Promise<void>
-}
-
-export const useStore = create<SessionState>((set, get) => ({
+// --- Graph Store ---
+export const useStore = create<GraphState>((set) => ({
     nodes: [
-        { id: 'me', name: 'Me', role: 'Peer', x: 0, y: 0 } // Center node
+        { id: 'me', name: 'Me', role: 'Self', fx: 0, fy: 0 }, // Central node
     ],
     links: [],
-    valence: {},
     selectedNodeId: null,
     selectedLinkId: null,
-
-    addNode: (node) => {
-        set((state) => ({ nodes: [...state.nodes, node] }))
-        get().saveSession()
-    },
-    addLink: (link) => {
-        set((state) => ({ links: [...state.links, link] }))
-        get().saveSession()
-    },
-    updateValence: (linkId, valence) => {
-        set((state) => ({
-            valence: { ...state.valence, [linkId]: valence }
-        }))
-        get().saveSession()
-    },
-    selectNode: (id) => set({ selectedNodeId: id, selectedLinkId: null }),
-    selectLink: (id) => set({ selectedLinkId: id, selectedNodeId: null }),
-    loadSession: (data) => set(data),
-
-    saveSession: async () => {
-        const state = get()
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session?.user) return
-
-        // Simple JSON blob storage for MVP
-        // In a real app, this would be normalized tables
-        const snapshot = {
-            nodes: state.nodes,
-            links: state.links,
-            valence: state.valence,
-            updated_at: new Date().toISOString()
-        }
-
-        const { error } = await supabase
-            .from('sessions')
-            .upsert({
-                user_id: session.user.id,
-                data: snapshot
-            }, { onConflict: 'user_id' })
-
-        if (error) console.error('Error saving session:', error)
-    }
-}))
+    valence: {},
+    addNode: (node) =>
+        set((state) => ({ nodes: [...state.nodes, node] })),
+    addLink: (link) =>
+        set((state) => ({ links: [...state.links, link] })),
+    selectNode: (id) =>
+        set({ selectedNodeId: id, selectedLinkId: null }),
+    selectLink: (id) =>
+        set({ selectedLinkId: id, selectedNodeId: null }),
+    updateValence: (linkId, valence) =>
+        set((state) => ({ valence: { ...state.valence, [linkId]: valence } })),
+    loadSession: (data) =>
+        set({ nodes: data.nodes, links: data.links }),
+}));
