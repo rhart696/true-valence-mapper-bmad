@@ -19,6 +19,31 @@ function App() {
     addLink({ source: 'me', target: id, type: 'Collaboration' })
   }
 
+  const handleExport = () => {
+    const { nodes, links, valence } = useStore.getState()
+    const data = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      nodes,
+      links: links.map(link => ({
+        source: typeof link.source === 'string' ? link.source : link.source.id,
+        target: typeof link.target === 'string' ? link.target : link.target.id,
+        type: link.type
+      })),
+      valence
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `valence-map-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
@@ -44,12 +69,20 @@ function App() {
         <aside className="w-64 p-4 overflow-y-auto bg-white border-r border-slate-200">
           <div className="mb-6">
             <h2 className="mb-2 text-sm font-semibold text-slate-500 uppercase">Actions</h2>
-            <button
-              onClick={handleAddNode}
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
-            >
-              + Add Person
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={handleAddNode}
+                className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+              >
+                + Add Person
+              </button>
+              <button
+                onClick={handleExport}
+                className="w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+              >
+                📥 Export Session
+              </button>
+            </div>
           </div>
 
           <div className="mb-6">

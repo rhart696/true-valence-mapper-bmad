@@ -5,7 +5,22 @@ import { useStore } from '../lib/store'
 
 export function GraphCanvas() {
     const svgRef = useRef<SVGSVGElement>(null)
-    const { nodes, links, selectNode, selectLink } = useStore()
+    const { nodes, links, selectNode, selectLink, valence } = useStore()
+
+    // Calculate valence color based on overall score
+    const getValenceColor = (linkId: string) => {
+        const linkValence = valence[linkId]
+        if (!linkValence) return '#999' // Default gray
+
+        const avg = (linkValence.trust + linkValence.communication + linkValence.support +
+                     linkValence.respect + linkValence.alignment) / 5
+
+        if (avg > 2) return '#22c55e' // Strong positive (green)
+        if (avg > 0) return '#78BE20' // Positive (ProActive green)
+        if (avg === 0) return '#999' // Neutral (gray)
+        if (avg > -2) return '#f59e0b' // Negative (orange)
+        return '#ef4444' // Strong negative (red)
+    }
 
     useEffect(() => {
         if (!svgRef.current) return
@@ -28,12 +43,15 @@ export function GraphCanvas() {
 
         // Render lines (links)
         const link = svg.append('g')
-            .attr('stroke', '#999')
-            .attr('stroke-opacity', 0.6)
+            .attr('stroke-opacity', 0.8)
             .selectAll('line')
             .data(links)
             .join('line')
-            .attr('stroke-width', 2)
+            .attr('stroke', (d: any) => {
+                const linkId = `${typeof d.source === 'string' ? d.source : d.source.id}-${typeof d.target === 'string' ? d.target : d.target.id}`
+                return getValenceColor(linkId)
+            })
+            .attr('stroke-width', 3)
             .on('click', (event: any, d: any) => {
                 selectLink(`${d.source.id}-${d.target.id}`)
                 event.stopPropagation()
@@ -109,7 +127,7 @@ export function GraphCanvas() {
         return () => {
             simulation.stop()
         }
-    }, [nodes, links, selectNode, selectLink])
+    }, [nodes, links, selectNode, selectLink, valence])
 
     return (
         <div className="w-full h-full bg-white border rounded-lg shadow-sm border-slate-200">
