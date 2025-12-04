@@ -56,5 +56,6 @@ export interface GraphState {
     selectNode: (id: string | null) => void;
     selectLink: (id: string | null) => void;
     updateValence: (linkId: string, valence: Valence) => void;
-    loadSession: (data: { nodes: Node[]; links: Link[] }) => void;
+    loadSession: (data: { nodes: Node[]; links: Link[]; valence?: Record<string, Valence> }) => void;
+    clearSession: () => void;
 }

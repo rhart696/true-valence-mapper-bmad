@@ -2,6 +2,7 @@ import { useAuthStore, useStore } from './lib/store'
 import { LoginPage } from './components/auth/LoginPage'
 import { GraphCanvas } from './components/GraphCanvas'
 import { ValenceEditor } from './components/ValenceEditor'
+import { sanitizeInput, sanitizeNotes } from './utils/sanitize'
 
 function App() {
   const { isAuthenticated, user, logout } = useAuthStore()
@@ -14,34 +15,73 @@ function App() {
   const handleAddNode = () => {
     const name = prompt("Enter person's name:")
     if (!name) return
+
+    // Sanitize input to prevent XSS and ensure data integrity
+    const sanitizedName = sanitizeInput(name, 100)
+    if (!sanitizedName) {
+      alert('Please enter a valid name')
+      return
+    }
+
     const id = crypto.randomUUID()
-    addNode({ id, name, role: 'Peer' })
+    addNode({ id, name: sanitizedName, role: 'Peer' })
     addLink({ source: 'me', target: id, type: 'Collaboration' })
   }
 
   const handleExport = () => {
-    const { nodes, links, valence } = useStore.getState()
-    const data = {
-      version: '1.0',
-      exportDate: new Date().toISOString(),
-      nodes,
-      links: links.map(link => ({
+    try {
+      const { nodes, links, valence } = useStore.getState()
+
+      // Sanitize all exported data to prevent injection attacks
+      const sanitizedNodes = nodes.map(node => ({
+        id: node.id,
+        name: sanitizeInput(node.name, 100),
+        role: node.role,
+        // Don't export internal D3 simulation properties (x, y, fx, fy)
+      }))
+
+      const sanitizedLinks = links.map(link => ({
         source: typeof link.source === 'string' ? link.source : link.source.id,
         target: typeof link.target === 'string' ? link.target : link.target.id,
         type: link.type
-      })),
-      valence
-    }
+      }))
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `valence-map-${new Date().toISOString().split('T')[0]}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+      // Sanitize valence data (especially notes field)
+      const sanitizedValence = Object.fromEntries(
+        Object.entries(valence).map(([linkId, v]) => [
+          linkId,
+          {
+            trust: v.trust,
+            communication: v.communication,
+            support: v.support,
+            respect: v.respect,
+            alignment: v.alignment,
+            notes: sanitizeNotes(v.notes, 5000)
+          }
+        ])
+      )
+
+      const data = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        nodes: sanitizedNodes,
+        links: sanitizedLinks,
+        valence: sanitizedValence
+      }
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `valence-map-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Export failed:', error)
+      alert('Failed to export session. Please try again.')
+    }
   }
 
   return (
