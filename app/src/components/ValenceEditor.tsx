@@ -1,43 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useStore } from '../lib/store'
 import type { Valence } from '../types'
 
-export function ValenceEditor() {
-    const { selectedLinkId, valence, updateValence } = useStore()
-    const [localValence, setLocalValence] = useState<Valence>({
-        trust: 0,
-        communication: 0,
-        support: 0,
-        respect: 0,
-        alignment: 0,
-        notes: ''
-    })
+type ValenceDimension = 'trust' | 'communication' | 'support' | 'respect' | 'alignment'
 
-    useEffect(() => {
-        if (selectedLinkId && valence[selectedLinkId]) {
-            setLocalValence(valence[selectedLinkId])
-        } else {
-            // Reset to defaults if no data exists yet
-            setLocalValence({
-                trust: 0,
-                communication: 0,
-                support: 0,
-                respect: 0,
-                alignment: 0,
-                notes: ''
-            })
-        }
-    }, [selectedLinkId, valence])
+const defaultValence: Valence = {
+    trust: 0,
+    communication: 0,
+    support: 0,
+    respect: 0,
+    alignment: 0,
+    notes: ''
+}
 
-    if (!selectedLinkId) return null
+function ValenceEditorContent({ linkId, initialData }: { linkId: string; initialData: Valence }) {
+    const { updateValence } = useStore()
+    const [localValence, setLocalValence] = useState<Valence>(initialData)
 
     const handleChange = (field: keyof Valence, value: number | string) => {
         const newValence = { ...localValence, [field]: value }
         setLocalValence(newValence)
-        updateValence(selectedLinkId, newValence)
+        updateValence(linkId, newValence)
     }
 
-    const dimensions = [
+    const dimensions: Array<{ id: ValenceDimension; label: string }> = [
         { id: 'trust', label: 'Trust Level' },
         { id: 'communication', label: 'Communication Quality' },
         { id: 'support', label: 'Mutual Support' },
@@ -49,30 +35,33 @@ export function ValenceEditor() {
         <div className="p-4 mt-4 bg-white border rounded-lg shadow-sm border-slate-200">
             <h3 className="mb-4 text-lg font-bold text-slate-800">Valence Assessment</h3>
             <div className="space-y-4">
-                {dimensions.map((dim) => (
-                    <div key={dim.id}>
-                        <div className="flex justify-between mb-1">
-                            <label className="text-sm font-medium text-slate-700">{dim.label}</label>
-                            <span className="text-sm font-bold text-blue-600">
-                                {(localValence as any)[dim.id] > 0 ? '+' : ''}{(localValence as any)[dim.id]}
-                            </span>
+                {dimensions.map((dim) => {
+                    const value = localValence[dim.id]
+                    return (
+                        <div key={dim.id}>
+                            <div className="flex justify-between mb-1">
+                                <label className="text-sm font-medium text-slate-700">{dim.label}</label>
+                                <span className="text-sm font-bold text-blue-600">
+                                    {value > 0 ? '+' : ''}{value}
+                                </span>
+                            </div>
+                            <input
+                                type="range"
+                                min="-5"
+                                max="5"
+                                step="1"
+                                value={value}
+                                onChange={(e) => handleChange(dim.id, parseInt(e.target.value))}
+                                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                            />
+                            <div className="flex justify-between text-xs text-slate-400">
+                                <span>-5 (Toxic)</span>
+                                <span>0 (Neutral)</span>
+                                <span>+5 (Vital)</span>
+                            </div>
                         </div>
-                        <input
-                            type="range"
-                            min="-5"
-                            max="5"
-                            step="1"
-                            value={(localValence as any)[dim.id]}
-                            onChange={(e) => handleChange(dim.id as keyof Valence, parseInt(e.target.value))}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                        />
-                        <div className="flex justify-between text-xs text-slate-400">
-                            <span>-5 (Toxic)</span>
-                            <span>0 (Neutral)</span>
-                            <span>+5 (Vital)</span>
-                        </div>
-                    </div>
-                ))}
+                    )
+                })}
 
                 <div>
                     <label className="block mb-1 text-sm font-medium text-slate-700">Notes</label>
@@ -87,4 +76,15 @@ export function ValenceEditor() {
             </div>
         </div>
     )
+}
+
+export function ValenceEditor() {
+    const { selectedLinkId, valence } = useStore()
+
+    if (!selectedLinkId) return null
+
+    const initialData = valence[selectedLinkId] || defaultValence
+
+    // key prop forces remount when selectedLinkId changes, resetting state automatically
+    return <ValenceEditorContent key={selectedLinkId} linkId={selectedLinkId} initialData={initialData} />
 }
